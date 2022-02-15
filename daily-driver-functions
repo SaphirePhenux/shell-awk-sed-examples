@@ -1,0 +1,51 @@
+# ##########################
+# AWK FUNCTIONS            #
+# ##########################
+
+# trim/clip 0 matches
+function an0 () {
+    awk '!/:0$/' < /dev/stdin
+}
+
+# linelimit (?) Old Name: shortline
+function limit() {
+    if [[ $# -gt 0 ]]; then
+        re='^[0-9]+$';
+        if ! [[ $1 =~ $re ]]; then
+            echo "error: Not a number" >&2; exit 1
+        else
+            COUNT=$1;
+        fi
+    fi
+    LINEWIDTH=${COUNT:=200};
+    awk -v chcount=$LINEWIDTH '{print substr($0,1,chcount)}' < /dev/stdin
+    echo
+}
+
+# ##########################
+# SED FUNCTIONS            #
+# ##########################
+
+
+
+# ##########################
+# GENERAL SHELL FUNCTIONS  #
+# ##########################
+
+
+# trim/clip 0 matches
+function gn0 () {
+    grep -E -v ':0$' < /dev/stdin
+}
+
+# trim/clip 0 matches
+function n0() {
+    if (( $# == 0 )) ; then
+        grep -E -v ':0$' < /dev/stdin
+        # OR
+        # awk '!/:0$/' < /dev/stdin
+    else
+        "$@" | grep -E -v ':0$';
+    fi
+}
+
